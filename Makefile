@@ -6,7 +6,7 @@
 CC=gcc
 CFLAGS=-Wall
 
-Allocator: main.o myfree.o mymalloc.o mytest.o
+Allocator: main.o myfree.o mymalloc.o mytest.o mycalloc.o
 	$(CC) main.o myfree.o mymalloc.o mytest.o Allocator
 
 main.o: main.c myfree.c mymalloc.c mytest.c
@@ -18,8 +18,12 @@ myfree.o: myfree.c
 mymalloc.o: mymalloc.c
 	$(CC) -c mymalloc.c -o mymalloc.o
 
+mycalloc.o: mycalloc.c
+	$(CC) -c mycalloc.c -o mycalloc.o
+
 mytest.o: mytest.c
 	$(CC) -c mytest.c -o mytest.o
+
 
 ################################################################################
 #lancement du programme : se deplacer dans la racine des fichiers         	   #
@@ -39,3 +43,4 @@ clean:
 
 mrproper: clean
 	rm -rf Allocator
+
