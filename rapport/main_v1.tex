@@ -1,0 +1,65 @@
+\pdfoutput=1
+
+\documentclass[11pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[Glenn]{fncychap} %Conny, Glenn, Bjarne, Bjornstrup, Rejne, Lenny
+\usepackage[top=0.5cm, bottom=2cm, left=2cm , right=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{fourier}
+\usepackage[frenchb]{babel}
+\usepackage{color}
+\usepackage{pifont}
+\usepackage{framed}
+\usepackage{booktabs}
+\definecolor{forestgreen}{rgb}{0.13,0.54,0.13}
+
+%%% Custom headers/footers (fancyhdr package)
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\fancyhead{}                                            % No page header
+\fancyfoot[L]{}                                         % Empty
+\fancyfoot[C]{}                                         % Empty
+\fancyfoot[R]{\thepage}                                 % Pagenumbering
+\renewcommand{\headrulewidth}{0pt}          % Remove header underlines
+\renewcommand{\footrulewidth}{0pt}              % Remove footer underlines
+\setlength{\headheight}{13.6pt}
+
+
+%%% Maketitle metadata
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}     % Horizontal rule
+
+\title{
+        %\vspace{-1in}
+        \usefont{OT1}{bch}{b}{n}
+        \normalfont \normalsize \textsc{Université Catholique de Louvain } \\ [25pt]
+        \horrule{0.5pt} \\[0.4cm]
+        \huge \emph{Rapport : implémentation de malloc et free} \\
+        \horrule{2pt} \\[0.5cm]
+}
+\author{
+        \normalfont                                 \normalsize
+            \normalsize
+            Amanpreet Singh et Gilles Mottiat\\
+}
+\begin{document}
+\maketitle
+\newpage
+
+\tableofcontents
+
+\chapter{Implémentation des fonctions et des tests unitaires}
+\section{mymalloc}
+\section{mycalloc}
+\section{myfree}
+\section{test a}
+\section{test b ..}
+\section{Les cas qui ne sont pas couverts par les tests}
+
+\chapter{Mesure de performance du programme}
+La figure suivante met en évidence 
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-PDF-mode: t
+%%% End:
