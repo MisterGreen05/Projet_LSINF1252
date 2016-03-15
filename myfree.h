@@ -1,1 +1,0 @@
-void myfree(void *ptr);
