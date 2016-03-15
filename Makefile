@@ -2,8 +2,8 @@
 
 
 ################################################################################
-#Compilation : se deplacer a l'endroit du makefile et lancer "make build"		   #
-#via le terminal 																															 #
+#Compilation : se deplacer a l'endroit du makefile et lancer "make build"      #
+#via le terminal 							       #
 ################################################################################
 
 CC = gcc
@@ -31,7 +31,7 @@ myfree.o: $(SRC_PATH)myfree.c $(INCLUDE_PATH)myfree.h
 
 ################################################################################
 #Nettoyage des fichiers .o : se deplacer a l'endroit du makefile et lancer     #
-# "make clean" via le terminal 			   																				 #
+# "make clean" via le terminal 			   			       #
 ################################################################################
 
 clean:
@@ -39,7 +39,7 @@ clean:
 
 ################################################################################
 #Nettoyage de l'exec alloc : se deplacer a l'endroit du makefile et lancer     #
-# "make mrproper" via le terminal 			   																		 #
+# "make mrproper" via le terminal 			   		       #
 ################################################################################
 
 mrproper: clean
