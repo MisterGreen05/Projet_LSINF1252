@@ -33,6 +33,7 @@ myfree.o: $(SRC_PATH)myfree.c $(INCLUDE_PATH)myfree.h
 #Nettoyage des fichiers .o : se deplacer a l'endroit du makefile et lancer     #
 # "make clean" via le terminal 			   			       #
 ################################################################################
+.PHONY: clean
 
 clean:
 	rm -rf *o
