@@ -1,1 +1,1 @@
-void* mymalloc(size_t size);
+void* mycalloc(size_t size);
