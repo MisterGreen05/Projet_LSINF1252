@@ -1,46 +1,47 @@
-################################################################################
-#Compilation : se deplacer dans la racine des fichiers et lancer						   #
-#via le terminal la commande make																							 #
-################################################################################
-
-CC=gcc
-CFLAGS=-Wall
-
-Allocator: main.o myfree.o mymalloc.o mytest.o mycalloc.o
-	$(CC) main.o myfree.o mymalloc.o mytest.o Allocator
-
-main.o: main.c myfree.c mymalloc.c mytest.c
-	$(CC) -c main.c -o main.o
-
-myfree.o: myfree.c
-	$(CC) -c myfree.c -o myfree.o
-
-mymalloc.o: mymalloc.c
-	$(CC) -c mymalloc.c -o mymalloc.o
-
-mycalloc.o: mycalloc.c
-	$(CC) -c mycalloc.c -o mycalloc.o
-
-mytest.o: mytest.c
-	$(CC) -c mytest.c -o mytest.o
+#AUTHOR : SINGH AMAN AND MOTTIAT GILLES
 
 
 ################################################################################
-#lancement du programme : se deplacer dans la racine des fichiers         	   #
-#et lancer via le terminal la commande make run																 #
+#Compilation : se deplacer a l'endroit du makefile et lancer "make build"		   #
+#via le terminal 																															 #
 ################################################################################
 
-run:
-	@echo "Lancement du programme : "
-	./main
+CC = gcc
+CFLAGS = -c -Wall
+INCLUDE_PATH = include/
+SRC_PATH = src/
+
+build: output
+
+output: main.o myfree.o mymalloc.o mycalloc.o
+	$(CC) main.o myfree.o mymalloc.o -o alloc
+
+main.o: $(SRC_PATH)main.c $(INCLUDE_PATH)mymalloc.h $(INCLUDE_PATH)mycalloc.h $(INCLUDE_PATH)myfree.h
+	$(CC) $(CFLAGS) $(SRC_PATH)main.c
+
+mymalloc.o: $(SRC_PATH)mymalloc.c $(INCLUDE_PATH)mymalloc.h
+	$(CC) $(CFLAGS) $(SRC_PATH)mymalloc.c
+
+mycalloc.o: $(SRC_PATH)mycalloc.c $(INCLUDE_PATH)mycalloc.h
+	$(CC) $(CFLAGS) $(SRC_PATH)mycalloc.c
+
+myfree.o: $(SRC_PATH)myfree.c $(INCLUDE_PATH)myfree.h
+	$(CC) $(CFLAGS) $(SRC_PATH)myfree.c
+
 
 ################################################################################
-#Nettoyage des executables : se deplacer dans la racine des fichiers       	   #
-#et lancer via le terminal la commande make clean															 #
+#Nettoyage des fichiers .o : se deplacer a l'endroit du makefile et lancer     #
+# "make clean" via le terminal 			   																				 #
 ################################################################################
+
 clean:
 	rm -rf *o
 
+################################################################################
+#Nettoyage de l'exec alloc : se deplacer a l'endroit du makefile et lancer     #
+# "make mrproper" via le terminal 			   																		 #
+################################################################################
+
 mrproper: clean
-	rm -rf Allocator
+	rm -rf alloc
 
