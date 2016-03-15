@@ -3,7 +3,7 @@
 #include<stdio.h>
 #include<sys/types.h>
 #include<unistd.h>
-#include"mymalloc.h"
+#include"../include/mymalloc.h"
 
 typedef struct block_header{
   unsigned int size : 29,
@@ -95,12 +95,3 @@ void* mymalloc(size_t size){
       }
     }
 }
-/*test
-void main(){
-  printf("%p\n", mymalloc(12));
-  printf("%p\n", mymalloc(16));
-  printf("%p\n", mymalloc(20));
-  printf("%p\n", mymalloc(24));
-  printf("%p\n", mymalloc(28));
-
-}*/
