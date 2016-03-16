@@ -13,18 +13,22 @@ typedef struct block_header{
 
 
 void* mycalloc(size_t size){
-    /*block memory by mymalloc*/
+
+    /*On alloue un block mémoire via mymalloc*/
     void* blk = mymalloc(size);
+    if (blk == NULL)
+      return NULL;
+
+    /*On utilise un pointeur qui se trouve à l'adresse du bloc*/
     char* ptr = (char*)blk;
     unsigned int i;
     unsigned int ALIGNED_PAYLOAD_SIZE = ((((((unsigned int)size)-1)>>2)<<2)+4);
-    
-    /*Travel the block memory by ptr and we initialize every bits to 0*/
+
+    /*On parcourt le bloc memoire de ptr et on intialise les bytes a 0*/
     for(i=0 ; i<ALIGNED_PAYLOAD_SIZE ; i++){
         (*(ptr+i)) = 0;
     }
-    
-    /*return the blk and every value set to O*/
-    
+
+    /*On retourne blk ton les données on été initialisées à O*/
     return blk;
 }
