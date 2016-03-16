@@ -11,82 +11,87 @@ typedef struct block_header{
                alloc : 1;
 } block_header;
 
-void* base_heap = NULL;
-unsigned int HEAP_TOTAL_SIZE = 0; 
+char* base_heap = NULL;
+unsigned int HEAP_TOTAL_SIZE = 0; /*proportional to the 1st call of mymalloc*/
 
 void* mymalloc(size_t size){
 
-  size_t HEADER_BLK_SIZE = sizeof(block_header)/4; //taille du header
-  int j = (int)size;
-  for (; j%4!=0;j++);
-  size_t BLK_SIZE = (size_t)j; // BLK_SIZE est un multiple de 4
-    
-    if(!base_heap){ // 1er appel à mymalloc : on initialise le heap et on alloue le premier bloc
-      HEAP_TOTAL_SIZE = (BLK_SIZE)*1024; // taille totale du heap 
-      base_heap = sbrk(HEAP_TOTAL_SIZE); // base du heap
-      void* end_heap = sbrk(0);
+  unsigned int HEADER_BLK_SIZE = sizeof(block_header); /*size header*/
+  unsigned int ALIGNED_PAYLOAD_SIZE = ((((((unsigned int)size)-1)>>2)<<2)+4); /*payload rounded for alignement*/
+  unsigned int BLK_SIZE = (HEADER_BLK_SIZE) + (ALIGNED_PAYLOAD_SIZE); /*total block size (header + rounded payload)*/
 
-      if(base_heap == (void*)-1 || end_heap == (void*)-1) { // si on ne peut pas étendre le heap 
+    /*1st call of mymalloc : initialize the heap and allocate the 1st block*/
+
+    if(!base_heap){
+
+      /*heap initialize*/
+      HEAP_TOTAL_SIZE = ((BLK_SIZE)*1024);
+      base_heap = (char*)sbrk(HEAP_TOTAL_SIZE);
+      char* end_heap = base_heap + (HEAP_TOTAL_SIZE);
+
+      /*if sbrk does not work*/
+      if(base_heap == (char*)-1 || end_heap == (char*)-1) {
         return NULL;
       }
 
-      block_header* first_blk = base_heap; //premier bloc
+      /*otherwise allocate the 1st block*/
+      block_header* first_blk = (block_header*) base_heap;
       first_blk->size = BLK_SIZE;
       first_blk->zero = 2;
       first_blk->alloc = 1;
 
-      return first_blk + HEADER_BLK_SIZE;
+      /*adress 1st block*/
+      return ( ((char*)first_blk) + (HEADER_BLK_SIZE) );
     }
 
-    // si l'espace demandé est plus grand que la taille du heap
-    else if (HEAP_TOTAL_SIZE < BLK_SIZE + HEADER_BLK_SIZE*4) {
-      return NULL;
-    }
+    /*second call of mymalloc : find a block in the heap and allocate*/
 
     else{
-      block_header* ptr = base_heap;
-      block_header* best = NULL;
+      block_header* ptr = (block_header*)base_heap;
       unsigned int i = 0;
 
-      // parcourt le heap avec base_heap comme point de départ      
+      /*travel the heap, starting point is the base_heap*/
       while(i<HEAP_TOTAL_SIZE){
-	
-        // si le bloc est déjà alloué on passe au suivant 
-        if(ptr->alloc == 1){ //&& (ptr->size != 0)){          
-          ptr += (ptr->size)/4 + HEADER_BLK_SIZE;
+
+        /*1st case : if the block is allocate we go to the next one*/
+        if(ptr->alloc == 1 && (ptr->size != 0)){
+          i = i + (ptr->size);
+          ptr = (block_header*)((char*)ptr + ptr->size);
         }
 
-	      /*si le bloc a pile la taille demandée ou que sa taille vaut zéro
-	      on renvoie directement l'adresse de ce bloc*/
-	      else if(ptr->size == BLK_SIZE+HEADER_BLK_SIZE || ptr->size==0){
-	        ptr->alloc = 1;
-	        ptr->size = BLK_SIZE; 
-	        return ptr + HEADER_BLK_SIZE; 
-      	}
+        /*second case : if the block is free we allocate one and it was not allocate before*/
+        else if (ptr->alloc == 0 && (ptr->size == 0)){
+          i = i + (BLK_SIZE);
 
-	      /*si la taille du bloc est assez grande et qu'elle est plus petite
-	      que celle de best ou que best n'a pas encore de valeur*/
-	      else if(ptr->size > BLK_SIZE+4*HEADER_BLK_SIZE && (ptr->size < best->size || best == NULL)) {
-	        best = ptr;
-	      }
-	
-	      else {
-	        ptr += ptr->size/4 + HEADER_BLK_SIZE;
-	      }
-	    
-	    i+= ptr->size;
-	    
+          ptr->size = BLK_SIZE;
+          ptr->zero = 2;
+          ptr->alloc = 1;
+
+          return ( ((char*)ptr) + (HEADER_BLK_SIZE) );
+        }
+
+        /*third case : if the block is free, was allocate before, but is not big enough, jump to the next one*/
+        else if (ptr->alloc == 0 && (ptr->size != 0) && ptr->size< BLK_SIZE){
+          i = i + (ptr->size);
+          ptr = (block_header*)((char*)ptr + ptr->size);
+        }
+
+        /*fourth case : if the block is free, was allocate before and is big enough, we allocate one*/
+        else if (ptr->alloc == 0 && (ptr->size != 0) && ptr->size>BLK_SIZE){
+          i = i + (BLK_SIZE);
+
+          ptr->size = BLK_SIZE;
+          ptr->zero = 2;
+          ptr->alloc = 1;
+
+          return ( ((char*)ptr) + (HEADER_BLK_SIZE) );
+        }
+
+        /*fifth case : if it did not find one*/
+        else{
+          return NULL;
+        }
+
       }
-
-    // si on a pas trouvé de bloc libre de taille suffisante on renvoie NULL
-    if(best==NULL){
-	     return NULL;
     }
-      
-    else{
-	    best->size = BLK_SIZE;
-	    best->alloc = 1;
-	    return best + best->size/4;
-    }
-  }
 }
